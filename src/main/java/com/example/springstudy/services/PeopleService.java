@@ -2,6 +2,7 @@ package com.example.springstudy.services;
 
 import com.example.springstudy.entities.People;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +18,12 @@ public class PeopleService {
         return peopleRepository.findById(id).orElse(new People());
     }
 
+    @SneakyThrows
     @Transactional
     public People create(People people) {
+        int randomSleep = (int) (Math.random() *  3 + 1) * 1000;
+        Thread.sleep(randomSleep);
+        people.setName("Sleep:" + Integer.toString(randomSleep));
         return peopleRepository.save(people);
     }
 
