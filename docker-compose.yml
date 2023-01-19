@@ -1,0 +1,68 @@
+version: "3"
+services:
+
+  consumer01:
+    container_name: dbsync-consumer01
+    restart: always
+    image: consumer:latest
+    ports:
+      - "8081:8080"
+    networks:
+      - net
+
+  consumer02:
+    container_name: dbsync-consumer02
+    restart: always
+    image: consumer:latest
+    ports:
+      - "8082:8080"
+    networks:
+      - net
+
+  consumer03:
+    container_name: dbsync-consumer03
+    restart: always
+    image: consumer:latest
+    ports:
+      - "8083:8080"
+    networks:
+      - net
+
+  zookeeper:
+    container_name: dbsync-zookeeper
+    restart: always
+    image: quay.io/debezium/zookeeper:1.9
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    networks:
+      - net
+
+  kafka:
+    container_name: dbsync-kafka
+    restart: always
+    image: quay.io/debezium/kafka:1.9
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - net
+
+  mysql:
+    container_name: dbsync-mysql
+    restart: always
+    image: mysql:8.0.22
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "1q2w3e4r!"
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
