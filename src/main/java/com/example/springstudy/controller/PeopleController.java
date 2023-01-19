@@ -53,6 +53,6 @@ public class PeopleController {
     @PutMapping("/put")
     @ApiOperation(value = "카프카 프로듀싱")
     public void update(String id) {
-        this.kafkaTemplate.send("dbsync-mysql.inventory.customers", id);
+        this.kafkaTemplate.send("dbsync-mysql.inventory.customers", "123", id);
     }
 }
