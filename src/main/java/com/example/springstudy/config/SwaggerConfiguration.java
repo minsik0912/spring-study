@@ -23,8 +23,6 @@ public class SwaggerConfiguration {
                 .build()
                 .genericModelSubstitutes(ResponseEntity.class)
                 .useDefaultResponseMessages(false)
-                .enableUrlTemplating(false)
-                .apiInfo(new ApiInfo("people", "people api docs", "v1", null, null, null, null, Collections.emptyList()))
-                .tags(new Tag("people", "people api"));
+                .enableUrlTemplating(false);
     }
 }

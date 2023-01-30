@@ -18,7 +18,10 @@ public class People {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    private String num;
+    @NotNull
     private String name;
     @NotNull
-    private String address;
+    private String delay;
 }

@@ -1,34 +1,6 @@
 server:
   port: 8080
 
-spring:
-  profiles:
-    active: local
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/study?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 1q2w3e4r!
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL5Dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-      format_sql: true        # SQL문을 가독성 있게 표현
-      use_sql_comments: true  # 디버깅 정보 출력
-  kafka:
-    topic: sample-test
-    consumer:
-      group-id: sample
-      auto-offset-reset: earliest
-      bootstrap-servers: kafka:9092
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      bootstrap-servers: kafka:9092
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
 # LogLevel별 관리
 # https://tecoble.techcourse.co.kr/post/2021-08-07-logback-tutorial/
 # KafkaAppender
@@ -52,13 +24,13 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-#        include=*:
 
-  profiles:
-    active: dev
+---
+spring:
+  profiles: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/study?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/study?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 1q2w3e4r!
   jpa:
@@ -72,7 +44,37 @@ management:
     topic: sample-test
     consumer:
       group-id: sample
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
+      bootstrap-servers: localhost:19092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:19092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+---
+server:
+  port: 8080
+
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/study?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 1q2w3e4r!
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      format_sql: true        # SQL문을 가독성 있게 표현
+      use_sql_comments: true  # 디버깅 정보 출력
+  kafka:
+    consumer:
+      group-id: sample
+      auto-offset-reset: latest
       bootstrap-servers: kafka:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -80,12 +82,3 @@ management:
       bootstrap-servers: kafka:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
-# LogLevel별 관리
-# https://tecoble.techcourse.co.kr/post/2021-08-07-logback-tutorial/
-# KafkaAppender
-# https://velog.io/@sw_smj/Kafka-Kafka%EB%A1%9C-%EB%A1%9C%EA%B9%85%ED%95%98%EA%B8%B0-2.-logback-kafka-appender-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
-#logging:
-#  config: classpath:log4j.xml
-#  level:
-#    root: info

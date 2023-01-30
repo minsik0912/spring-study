@@ -27,7 +27,7 @@ public class KafkaConfiguration {
     private String datasourceUrl;
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, String> customersConsumerFactory() {
         System.out.print(datasourceUrl);
 
         Map<String, Object> config = new HashMap<>();
@@ -43,9 +43,32 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory concurrentKafkaListenerContainerFactory() {
+    public ConsumerFactory<String, String> addressConsumerFactory() {
+        System.out.print(datasourceUrl);
+
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, StringSerializer.class);
+        config.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, String.format("%s-%s", groupId, UUID.randomUUID()));
+
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory customersConcurrentKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(customersConsumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory addressConcurrentKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(addressConsumerFactory());
         return factory;
     }
 }
